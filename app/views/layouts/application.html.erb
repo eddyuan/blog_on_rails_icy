@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blog On Rails</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body>
+    <!-- Nav Bar -->
+    <nav class="navbar navbar-expand-lg bg-light navbar-light sticky-top">
+      <div class="container-fluid">
+        <%= link_to 'Blog on Rails', root_path, class:"navbar-brand" %>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <%= link_to 'Home', root_path, class:"nav-link" %>
+            </li>
+            <li class="nav-item">
+              <%= link_to 'New Post', new_post_path, class:"nav-link" %>
+            </li>
+        </div>
+      </div>
+    </nav>
+    
+    
+    <div class="container mt-4">
+      <% flash.each do |type, message| %>
+        <div class="alert alert-<%= type %>" role="alert">
+          <%= message %>
+        </div>
+      <% end %>
+      <div><%= yield %></div>
+    </div>
+  </body>
+</html>
