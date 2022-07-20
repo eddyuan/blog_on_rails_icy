@@ -1,4 +1,5 @@
-<%= form_with(model: @post) do |form| %>
+<%# Because tuobo does not allow same page redirection after rails 7, disable turbo to show error %>
+<%= form_with model: @post, data: { turbo: false } do |form| %>
   <% if @post.errors.any? %>
     <div class="alert alert-danger">
       <h5><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h5>

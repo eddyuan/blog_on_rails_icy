@@ -12,27 +12,20 @@
 <hr />
 
 <div>
-  <% if @comment.errors.any? %>
-  <div class="alert alert-danger">
-    <h5>
-      <%= pluralize(@comment.errors.count, "error") %> prohibited this comment
-      from being saved:
-    </h5>
-    <ul class="m-0">
-      <% @comment.errors.each do |error| %>
-      <li><%= error.full_message %></li>
-      <% end %>
-    </ul>
-  </div>
-  <% end %>
   <h4>Write Comment</h4>
   <% if @comment.errors.any? %>
-  <ul>
-    <% @comment.errors.full_messages.each do |msg| %>
-    <li><%= msg %></li>
-    <% end %>
-  </ul>
-  <% end %> 
+    <div class="alert alert-danger">
+      <h5>
+        <%= pluralize(@comment.errors.count, "error") %> prohibited this comment
+        from being saved:
+      </h5>
+      <ul class="m-0">
+        <% @comment.errors.each do |error| %>
+        <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
   <%= form_with(model:[@post, @comment]) do |f| %>
     <div class="mb-3">
       <%= f.text_area :body, class:"form-control" %>

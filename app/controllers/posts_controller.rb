@@ -9,10 +9,10 @@ class PostsController < ApplicationController
   def create
     @post = Post.new(post_params)
     if @post.save
-      flash[:success] = "Post created successfully!"
-      redirect_to post_path(@post)
+      flash[:success] = "Post created!"
+      redirect_to post_path @post
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -30,6 +30,7 @@ class PostsController < ApplicationController
 
   def update
     if @post.update(post_params)
+      flash[:success] = "Post updated!"
       redirect_to post_path(@post)
     else
       render :edit
