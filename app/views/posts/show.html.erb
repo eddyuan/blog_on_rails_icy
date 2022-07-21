@@ -44,7 +44,7 @@
         <span><%= time_tag comment.created_at, "data-local":"time-ago" %></span>
         <span class="mx-1">·</span>
         <%= button_to "Delete", post_comment_path(@post, comment), method:
-        :delete,form: { data: { turbo_confirm: "Are you sure?" } }, class:
+        :delete, form: { data: { turbo_confirm: "Are you sure?" } }, class:
         "link-primary link-btn" %>
       </small>
       <hr />

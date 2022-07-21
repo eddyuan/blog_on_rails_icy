@@ -6,7 +6,9 @@ Rails.application.routes.draw do
 
   get '/', to: 'posts#index', as: :root
 
+  # /posts/1
   resources :posts do
+    # /posts/1/comments/2
     resources :comments, only: [:create, :destroy]
   end
 
