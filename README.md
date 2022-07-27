@@ -1,24 +1,41 @@
-# README
+## HW 6
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Generate User Model
 
-Things you may want to cover:
+```
+rails g model User name:string email:string:uniq password_digest:string
+```
 
-* Ruby version
+### Add admin column
 
-* System dependencies
+```
+rails g migration AddIsAdminToUsers is_admin:boolean
+```
 
-* Configuration
+Add `default:false` in `add_is_admin_to_users.rb` migration
 
-* Database creation
+---
 
-* Database initialization
+### Add User to Posts
 
-* How to run the test suite
+```
+rails g migration AddUserToPosts user:references
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+###### Make it nullable
 
-* Deployment instructions
+remove `null: false` in migration
+add `belongs_to :user, optional: true` in `posts.rb`
 
-* ...
+---
+
+### Add User to Comments
+
+```
+rails g migration AddUserToComments user:references
+```
+
+###### Make it nullable
+
+remove `null: false` in migration
+add `belongs_to :user, optional: true` in `comments.rb`
