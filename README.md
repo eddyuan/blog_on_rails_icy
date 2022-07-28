@@ -22,21 +22,41 @@ end
 
 # HW 6
 
-## Generate User
+## Generate User Model
 
 ```
 rails g model User name:string email:string:uniq password_digest:string
 ```
 
-### Add `is_admin` column for Users
+```rb
+# user.rb
+class User < ApplicationRecord
+  has_secure_password
+  # :nullify means clear the reference
+  # but still keep comments/posts when destroy the user
+  # it should work with optional:true in the reference
+  has_many :comments, dependent: :nullify
+  has_many :posts, dependent: :nullify
+  validates :email, presence: true, uniqueness: true
+end
+```
+
+## Add `is_admin` column for Users
 
 ```
 rails g migration AddIsAdminToUsers is_admin:boolean
 ```
 
-Add `default:false` in `AddIsAdminToUsers` migration
+```rb
+# add_is_admin_to_users.rb
+class AddIsAdminToUsers < ActiveRecord::Migration[7.0]
+  def change
+    add_column :users, :is_admin, :boolean, default: false #<= Add this default:false
+  end
+end
+```
 
-### Add CanCan:Ability Model & edit `ability.rb`
+## Add CanCan:Ability Model & edit `ability.rb`
 
 ```
 rails g cancan:ability
@@ -73,7 +93,6 @@ can :crud, User, id: user.id
 rails g controller users
 ```
 
-- Edit `user.rb` model accordingly
 - Edit `users_controllers` accordingly
 - Create necessary views for users
 - Add users routing in `routes.rb`
