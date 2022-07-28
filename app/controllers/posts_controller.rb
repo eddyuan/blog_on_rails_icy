@@ -1,7 +1,8 @@
 class PostsController < ApplicationController
-
-  before_action :find_post, only: [:edit, :update, :show, :destroy]
-
+  # This is defined in ApplicationController
+  before_action :authenticated_user!, except: %i[index show]
+  before_action :find_post, only: %i[edit update show destroy]
+  before_action :authorized_user!, only: %i[edit update destroy]
   # For showing the page
   def new
     @post = Post.new
@@ -44,7 +45,7 @@ class PostsController < ApplicationController
     if @post.destroy
       flash[:success] = "Post deleted!"
       redirect_to posts_path
-    else 
+    else
       flash[:danger] = "Can't delete"
     end
   end
@@ -52,11 +53,19 @@ class PostsController < ApplicationController
   # Global fn to find the post
 
   private
-    def find_post
-      @post = Post.find params[:id]
-    end
-    def post_params
-      params.require(:post).permit(:title, :body)
-    end
 
+  def find_post
+    @post = Post.find params[:id]
+  end
+
+  def post_params
+    params.require(:post).permit(:title, :body)
+  end
+
+  def authorized_user!
+    unless can?(:crud, @post)
+      flash[:danger] = "You don;t have permission"
+      redirect_to root_path
+    end
+  end
 end
