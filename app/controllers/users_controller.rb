@@ -22,6 +22,46 @@ class UsersController < ApplicationController
     end
   end
 
+  def edit
+  end
+
+  def update
+    if @user.update params.require(:user).permit(
+                      :name,
+                      :email,
+                      :password,
+                      :password_confirmation
+                    )
+      redirect_to root_path
+    else
+      flash.alert = "try again"
+      render :edit
+    end
+  end
+
+  def change_password
+    @user = User.new
+  end
+
+  def update_password
+    if @user&.authenticate(params[:user][:current_password])
+      if params[:user][:current_password] == params[:user][:password]
+        @user.errors.add(:current_password, "try again")
+      end
+
+      if params[:user][:password] != params[:user][:password_confirmation]
+        @user.errors.add(:password, "try again")
+      end
+
+      if (!@user.errors.any?) && (@user.update user_params)
+        flash[:success] = "Password updated"
+        redirect_to root_path
+      else
+        render :change_password
+      end
+    end
+  end
+
   private
 
   def user_params

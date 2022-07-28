@@ -1,0 +1,18 @@
+<h1 >Edit your account </h1>
+<% if @user.errors.any?%>
+        <p><%= @user.errors.full_messages.join(', ')%></p>
+    <% end%>
+   
+<%= form_with model: @user do |form| %>
+  <div> 
+      <%= form.label :name%>
+      <%= form.text_field :name%>
+    </div>
+  <div>
+      <%= form.label :email%>
+      <%= form.text_field :email%>
+  </div>
+    <%= form.submit "submit"%>
+<% end %>
+</div>
+<div class="change-password-link"><%= link_to 'Change password', change_password_path %></div>

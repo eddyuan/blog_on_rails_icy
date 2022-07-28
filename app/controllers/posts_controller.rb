@@ -64,7 +64,7 @@ class PostsController < ApplicationController
 
   def authorized_user!
     unless can?(:crud, @post)
-      flash[:danger] = "You don;t have permission"
+      flash[:danger] = "You don't have permission"
       redirect_to root_path
     end
   end
