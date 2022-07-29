@@ -1,11 +1,11 @@
 class CommentsController < ApplicationController
- 
+  before_action :authenticated_user!, except: %i[index show]
+  before_action :find_post, only: %i[create destroy]
+  before_action :find_comment, only: [:destroy]
   def create
-    @post = Post.find(params[:post_id])
     @comment = Comment.new(params.require(:comment).permit(:body))
     @comment.post = @post
     if @comment.save
-
       flash[:success] = "Comment created successfully!"
       redirect_to post_path(@post)
       # if saved successfully then redirect to the show page of the question
@@ -18,13 +18,11 @@ class CommentsController < ApplicationController
       @comments = @post.comments.order(created_at: :desc)
       # '/questions/show' is not the action
       # it's the page /questions/show.html.erb
-      render '/posts/show', status: 303
+      render "/posts/show", status: 303
     end
   end
 
   def destroy
-    @post = Post.find(params[:post_id])
-    @comment = Comment.find(params[:id])
     @comment.destroy
     flash[:success] = "Comment Deleted!"
     redirect_to post_path(@post)
@@ -32,10 +30,15 @@ class CommentsController < ApplicationController
 
   private
 
-  
+  def find_post
+    @post = Post.find(params[:post_id])
+  end
+
+  def find_comment
+    @comment = Comment.find(params[:id])
+  end
 
   def comment_params
     params.require(:comment).permit(:title, :body)
   end
-
 end

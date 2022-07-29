@@ -1,7 +1,7 @@
-<h1>Sign Up</h1>
+<h1 class="mb-4">Sign Up</h1>
 <%= render "errors" %>
 
-<%= form_with model: @user, data: { turbo: false } do |form| %>
+<%= form_with model: @user, url: signup_path, data: { turbo: false } do |form| %>
   <div class="mb-4">
     <%= form.label :name%>
     <%= form.text_field :name, class:"form-control"%>

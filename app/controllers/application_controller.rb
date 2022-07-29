@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   def authenticated_user!
     unless user_signed_in?
       flash[:danger] = "Please sign in"
-      redirect_to new_session_path
+      redirect_to signup_path
     end
   end
 end

@@ -58,6 +58,51 @@ class AddIsAdminToUsers < ActiveRecord::Migration[7.0]
 end
 ```
 
+## Add `User` to `Posts` DB
+
+```
+rails g migration AddUserToPosts user:references
+```
+
+#### Make nullable so `Posts` don't get destroyed when destroy user
+
+remove `null: false` in `AddUserToPosts` migration
+add `belongs_to :user, optional: true` in `posts.rb`
+
+## Add `User` to `Comments` DB
+
+```
+rails g migration AddUserToComments user:references
+```
+
+#### Make nullable so `Comments` don't get destroyed when destroy user
+
+remove `null: false` in `AddUserToComments` migration
+add `belongs_to :user, optional: true` in `comments.rb`
+
+## Create `UsersController`
+
+```
+rails g controller users
+```
+
+- Edit `users_controllers` accordingly
+- Create necessary views for users
+
+## Create `SessionsController`
+
+```
+rails g controller sessions
+```
+
+- Edit `sessions_controller` accordingly
+- Create login view views for session
+
+## Implent `Users` & `Sessions` in route and page
+
+- Add users/sessions routing in `routes.rb`
+- Add the buttons in navbar in `application.html.erb` accordingly
+
 ## Add CanCan:Ability Model & edit `ability.rb`
 
 ```
@@ -89,47 +134,41 @@ end
 can :crud, User, id: user.id
 ```
 
-## Create `UsersController`
+## Implents Global auth helpers & functions
 
-```
-rails g controller users
-```
+```rb
+# application_controller.rb
+# define functions & helpers for user auth
+def current_user
+  @current_user ||= User.find_by_id session[:user_id]
+end
 
-- Edit `users_controllers` accordingly
-- Create necessary views for users
+helper_method :current_user
 
-## Create `SessionsController`
+def user_signed_in?
+  current_user.present?
+end
 
-```
-rails g controller sessions
-```
+helper_method :user_signed_in?
 
-- Edit `sessions_controller` accordingly
-- Create login view views for session
-
-## Implent `Users` & `Sessions` in route and page
-
-- Add users/sessions routing in `routes.rb`
-- Add the buttons in navbar in `application.html.erb` accordingly
-
-## Add `User` to `Posts`
-
-```
-rails g migration AddUserToPosts user:references
+def authenticated_user!
+  unless user_signed_in?
+    flash[:danger] = "Please sign in"
+    redirect_to signup_path
+  end
+end
 ```
 
-#### Make nullable so `Posts` don't get destroyed when destroy user
+## Implents Action-Specific auth requirements
 
-remove `null: false` in `AddUserToPosts` migration
-add `belongs_to :user, optional: true` in `posts.rb`
-
-## Add `User` to `Comments`
-
-```
-rails g migration AddUserToComments user:references
+```rb
+# posts_controller.rb
+# define which actions need authenticated_user
+before_action :authenticated_user!, except: %i[index show]
 ```
 
-#### Make nullable so `Comments` don't get destroyed when destroy user
-
-remove `null: false` in `AddUserToComments` migration
-add `belongs_to :user, optional: true` in `comments.rb`
+```rb
+# comments_controller.rb
+# define which actions need authenticated_user
+before_action :authenticated_user!, except: %i[index show]
+```
