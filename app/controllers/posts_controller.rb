@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
   # This is defined in ApplicationController
-  before_action :authenticated_user!, except: %i[index show]
   before_action :find_post, only: %i[edit update show destroy]
+  before_action :authenticated_user!, except: %i[index show]
   before_action :authorized_user!, only: %i[edit update destroy]
   # For showing the page
   def new
@@ -22,6 +22,7 @@ class PostsController < ApplicationController
 
   def create
     @post = Post.new(post_params)
+    @post.user = @current_user
     if @post.save
       flash[:success] = "Post created!"
       redirect_to post_path @post

@@ -22,7 +22,13 @@ end
 
 # HW 6
 
-## Add `bcrypt` in `Gemfile`
+## Add `bcrypt`, `cancancan` in `Gemfile`
+
+```rb
+...
+gem "bcrypt", "~> 3.1.7"
+gem "cancancan"
+```
 
 ## Generate User Model
 
@@ -33,13 +39,23 @@ rails g model User name:string email:string:uniq password_digest:string
 ```rb
 # user.rb
 class User < ApplicationRecord
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   has_secure_password
   # :nullify means clear the reference
   # but still keep comments/posts when destroy the user
   # it should work with optional:true in the reference
   has_many :comments, dependent: :nullify
   has_many :posts, dependent: :nullify
-  validates :email, presence: true, uniqueness: true
+  validates :name, presence: true
+  validates :email, presence: true, uniqueness: true, format: VALID_EMAIL_REGEX
+  # validate password when it's passed to the param
+  validates :password,
+            confirmation: true,
+            length: {
+              within: 6..40
+            },
+            if: -> { password.present? }
+  # only when present so it won't trigger when updating user profile
 end
 ```
 
@@ -159,16 +175,70 @@ def authenticated_user!
 end
 ```
 
-## Implents Action-Specific auth requirements
+## Implents Action-Specific auth requirements & add User in `Posts` and `Comments`
 
 ```rb
 # posts_controller.rb
 # define which actions need authenticated_user
+
+...
+
 before_action :authenticated_user!, except: %i[index show]
+before_action :authorized_user!, only: %i[edit update destroy]
+
+...
+
+def create
+    @post = Post.new(post_params)
+    @post.user = @current_user
+
+...
+
+def authorized_user!
+  unless can?(:crud, @post)
+    flash[:danger] = "You don't have permission"
+    redirect_to root_path
+  end
+end
+
 ```
 
 ```rb
 # comments_controller.rb
 # define which actions need authenticated_user
+
+...
+
 before_action :authenticated_user!, except: %i[index show]
+before_action :authorized_user!, only: [:destroy]
+
+...
+
+def create
+    @comment = Comment.new(params.require(:comment).permit(:body))
+    @comment.user = @current_user
+
+...
+
+def authorized_user!
+  unless can?(:destroy, @comment)
+    flash[:danger] = "You don't have permission"
+    redirect_to post_path(@post)
+  end
+end
 ```
+
+## Adjust the views respectively with `can?` & `user_signed_in?` rules
+
+- `application.html.erb`
+- `posts/show.html.erb`
+- etc...
+
+## We can also add `Users` for admin to let admin see all the users
+
+- `users/index.html.erb`
+- also add in `routes.rb`
+
+## Add seeds in `seeds.rb`
+
+## And finally we are done ...
