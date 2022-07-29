@@ -22,6 +22,8 @@ end
 
 # HW 6
 
+## Add `bcrypt` in `Gemfile`
+
 ## Generate User Model
 
 ```
@@ -87,7 +89,7 @@ end
 can :crud, User, id: user.id
 ```
 
-### Create `UsersController`
+## Create `UsersController`
 
 ```
 rails g controller users
@@ -95,8 +97,20 @@ rails g controller users
 
 - Edit `users_controllers` accordingly
 - Create necessary views for users
-- Add users routing in `routes.rb`
-- Add
+
+## Create `SessionsController`
+
+```
+rails g controller sessions
+```
+
+- Edit `sessions_controller` accordingly
+- Create login view views for session
+
+## Implent `Users` & `Sessions` in route and page
+
+- Add users/sessions routing in `routes.rb`
+- Add the buttons in navbar in `application.html.erb` accordingly
 
 ## Add `User` to `Posts`
 
