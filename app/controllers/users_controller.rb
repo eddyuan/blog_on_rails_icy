@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticated_user!, except: %i[new create]
+  # before_action :authenticated_user!, except: %i[new create]
   before_action :authenticated_user!, except: %i[new create]
   before_action :find_user, only: %i[show edit update update_password]
   before_action :admin_user!, only: [:index]
@@ -8,6 +8,7 @@ class UsersController < ApplicationController
     @users = User.order(id: :asc)
   end
 
+  # Get
   def new
     @user = User.new
   end
@@ -15,6 +16,7 @@ class UsersController < ApplicationController
   def show
   end
 
+  # Post
   def create
     @user = User.new user_params
     # store all emails in lowercase to avoid duplicates and case-sensitive login errors:
@@ -28,6 +30,7 @@ class UsersController < ApplicationController
     end
   end
 
+  # Get
   def edit
   end
 
@@ -44,6 +47,7 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+  # Post
   def update_password
     current_password = params[:current_password]
     new_password = params[:new_password]

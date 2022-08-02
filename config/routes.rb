@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   # We want a login/logout path instead of session
   get "login", to: "sessions#new" #, as: :login
   post "login", to: "sessions#create" #, as: :login
+  patch "login", to: "sessions#create" #, as: :login
+  put "login", to: "sessions#create" #, as: :login
   delete "logout", to: "sessions#destroy" #, as: :logout
 
   # For users, we don't want to see userId in the params, we get user from session instead
@@ -17,13 +19,13 @@ Rails.application.routes.draw do
   patch "signup", to: "users#create"
   put "signup", to: "users#create"
 
-  get "user", to: "users#edit"
+  get "user", to: "users#edit" # user_path
   post "user", to: "users#update"
   patch "user", to: "users#update"
   put "user", to: "users#update"
 
   # For admin
-  get "users", to: "users#index"
+  get "users", to: "users#index" # users_path
 
   get "change_password", to: "users#change_password" #, as: :change_password
   post "change_password", to: "users#update_password" #, as: :change_password

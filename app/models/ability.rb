@@ -42,7 +42,7 @@ class Ability
 
     # Can :crud post if use is the owner
     can :crud, Post do |post|
-      post.user == user
+      post.user == user # true or false
     end
 
     # Can :crud comment if use is the post or comment's owner

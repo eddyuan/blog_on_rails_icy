@@ -17,6 +17,7 @@ a.card-link {
   -webkit-box-orient: vertical;
   text-overflow: ellipsis;
 }
+
 .ellipsis-2 {
   width: 100%;
   overflow: hidden;
@@ -38,8 +39,8 @@ a.card-link {
 }
 
 button,
-input[type="submit"],
-input[type="reset"] {
+input[type='submit'],
+input[type='reset'] {
   &:not(.btn) {
     background: none;
     border: none;
