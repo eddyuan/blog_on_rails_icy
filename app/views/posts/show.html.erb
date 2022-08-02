@@ -1,17 +1,13 @@
 <div class="mb-4">
-  <h1 class="mb-4"><%= @post.title %></h1>
-  <p class="mb-4"><%= @post.body %></p>
-  <div>
-    <small>
-      Posted <%= time_tag @post.created_at, "data-local":"time-ago" %> by <%= @post.user&.name || "Deleted User" %>
-    </small>
+  <h1><%= @post.title %></h1>
+  <p><%= @post.body %></p>
+  <small>
+    Posted <%= time_tag @post.created_at, "data-local":"time-ago" %>
+  </small>
+  <div class="d-flex mt-4">
+    <%= link_to "Edit this post", edit_post_path(@post), class:"btn btn-outline-primary me-3" %> 
+    <%= button_to "Delete", @post, method: :delete, form: { data: {turbo_confirm: "Are you sure?" } }, class:"btn btn-outline-danger" %>
   </div>
-  <% if can? :crud, @post %>
-    <div class="d-flex mt-4">
-      <%= link_to "Edit this post", edit_post_path(@post), class:"btn btn-outline-primary me-3" %> 
-      <%= button_to "Delete", @post, method: :delete, form: { data: {turbo_confirm: "Are you sure?" } }, class:"btn btn-outline-danger" %>
-    </div>
-  <% end %>
 </div>
 <hr />
 
@@ -32,15 +28,9 @@
   <% end %>
   <%= form_with(model:[@post, @comment]) do |f| %>
     <div class="mb-3">
-      <%= f.text_area :body, class:"form-control", disabled: !user_signed_in? %>
+      <%= f.text_area :body, class:"form-control" %>
     </div>
-    <% if user_signed_in? %>
-      <%= f.submit "Submit", class:"btn btn-outline-primary" %> 
-    <% else %>
-      <%= link_to "Sign In", login_path, class:"btn btn-outline-primary" %>
-      or
-      <%= link_to "Sign Up", signup_path, class:"btn btn-outline-primary" %>
-    <% end %>
+    <%= f.submit "Submit", class:"btn btn-outline-primary" %> 
   <% end %>
 </div>
 
@@ -51,16 +41,11 @@
     <div id="<%= dom_id(comment) %>" class="my-3">
       <div><%= comment.body %></div>
       <small class="d-flex">
-        <span>
-        By <%=  comment.user&.name || "Deleted User" %>, 
-        <%= time_tag comment.created_at, "data-local":"time-ago" %>
-        </span>
-        <% if can? :destroy, comment %>
-          <span class="mx-1">·</span>
-          <%= button_to "Delete", post_comment_path(@post, comment), method:
-          :delete, form: { data: { turbo_confirm: "Are you sure?" } }, class:
-          "link-primary link-btn" %>
-        <% end %>
+        <span><%= time_tag comment.created_at, "data-local":"time-ago" %></span>
+        <span class="mx-1">·</span>
+        <%= button_to "Delete", post_comment_path(@post, comment), method:
+        :delete, form: { data: { turbo_confirm: "Are you sure?" } }, class:
+        "link-primary link-btn" %>
       </small>
       <hr />
     </div>

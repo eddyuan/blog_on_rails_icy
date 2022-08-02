@@ -1,12 +1,7 @@
 class UsersController < ApplicationController
   before_action :authenticated_user!, except: %i[new create]
-  before_action :authenticated_user!, except: %i[new create]
   before_action :find_user, only: %i[show edit update update_password]
-  before_action :admin_user!, only: [:index]
-
-  def index
-    @users = User.order(id: :asc)
-  end
+  before_action :authorized_user!, only: %i[edit update]
 
   def new
     @user = User.new
@@ -45,6 +40,8 @@ class UsersController < ApplicationController
   end
 
   def update_password
+    # @user = User.new
+    @user = @current_user
     current_password = params[:current_password]
     new_password = params[:new_password]
     new_password_confirmation = params[:new_password_confirmation]
@@ -74,6 +71,61 @@ class UsersController < ApplicationController
       flash[:success] = "Password updated"
       redirect_to root_path
     end
+
+    # if @user&.authenticate(current_password)
+    #   if current_password == new_password
+    #     @user.errors.add(:new_password, "can not be the same as current")
+    #   end
+
+    #   unless new_password.present?
+    #     @user.errors.add(:new_password, "can not be blank")
+    #   end
+
+    #   # if params[:new_password] != params[:new_password_confirmation]
+    #   #   @user.errors.add(:new_password, "Not matched")
+    #   # end
+    # else
+    #   @user.errors.add(:current_password, "incorrect")
+    # end
+    # password = params[:new_password]
+    # password_confirmation = params[:new_password_confirmation]
+
+    # @user.password = password
+    # @user.password_confirmation = password_confirmation
+
+    # current_password = params[:user][:current_password]
+    # password = params[:new_password]
+    # password_confirmation = params[:new_password_confirmation]
+
+    # @user.password = password
+    # @user.password_confirmation = password_confirmation
+
+    # if @user&.authenticate(current_password)
+    #   if current_password == params[:new_password]
+    #     @user.errors.add(:new_password, "Please use a different")
+    #   end
+
+    #   if params[:new_password] != params[:new_password_confirmation]
+    #     @user.errors.add(:new_password, "Not matched")
+    #   end
+    # else
+    #   @user.errors.add(:current_password, "Incorrect")
+    # end
+
+    # if (!@user.errors.any?) && @user.update(password: new_password)
+    #   # @user.password = new_password
+    #   # @user.password_confirmation = new_password_confirmation
+    #   # if @user.save
+    #   #   flash[:success] = "Password updated"
+    #   #   redirect_to root_path
+    #   # else
+    #   #   render :change_password
+    #   # end
+    #   flash[:success] = "Password updated"
+    #   redirect_to root_path
+    # else
+    #   render :change_password
+    # end
   end
 
   private
@@ -91,14 +143,11 @@ class UsersController < ApplicationController
     params.require(:user).permit(:name, :email)
   end
 
-  # There'is another way of using strong params, which requires @user model in the form
-  # In that case, it will be params[:user][:password] ...
-  # def update_password_params
-  #   params.require(:user).permit(:password, :password_confirmation)
-  # end
+  def update_password_params
+    params.require(:user).permit(:password, :password_confirmation)
+  end
 
   def find_user
-    # We already have current user in application_controller
     @user = @current_user
   end
 

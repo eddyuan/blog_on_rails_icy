@@ -8,10 +8,25 @@ class User < ApplicationRecord
   has_many :posts, dependent: :nullify
   validates :name, presence: true
   validates :email, presence: true, uniqueness: true, format: VALID_EMAIL_REGEX
+
   validates :password,
             confirmation: true,
             length: {
               within: 6..40
             },
             if: -> { password.present? }
+  # validates :password,
+  #           presence: true,
+  #           confirmation: true,
+  #           length: {
+  #             within: 6..40
+  #           },
+  #           on: :create
+  # validates :password,
+  #           confirmation: true,
+  #           length: {
+  #             within: 6..40
+  #           },
+  #           allow_blank: true,
+  #           on: :update
 end

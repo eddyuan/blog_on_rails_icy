@@ -22,9 +22,6 @@ Rails.application.routes.draw do
   patch "user", to: "users#update"
   put "user", to: "users#update"
 
-  # For admin
-  get "users", to: "users#index"
-
   get "change_password", to: "users#change_password" #, as: :change_password
   post "change_password", to: "users#update_password" #, as: :change_password
   patch "change_password", to: "users#update_password" #, as: :change_password

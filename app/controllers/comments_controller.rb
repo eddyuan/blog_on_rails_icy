@@ -1,12 +1,9 @@
 class CommentsController < ApplicationController
-  # be careful about the order here
+  before_action :authenticated_user!, except: %i[index show]
   before_action :find_post, only: %i[create destroy]
   before_action :find_comment, only: [:destroy]
-  before_action :authenticated_user!, except: %i[index show]
-  before_action :authorized_user!, only: [:destroy]
   def create
     @comment = Comment.new(params.require(:comment).permit(:body))
-    @comment.user = @current_user
     @comment.post = @post
     if @comment.save
       flash[:success] = "Comment created successfully!"
@@ -43,12 +40,5 @@ class CommentsController < ApplicationController
 
   def comment_params
     params.require(:comment).permit(:title, :body)
-  end
-
-  def authorized_user!
-    unless can?(:destroy, @comment)
-      flash[:danger] = "You don't have permission"
-      redirect_to post_path(@post)
-    end
   end
 end
